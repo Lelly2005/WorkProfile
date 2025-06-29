@@ -1,29 +1,20 @@
+FROM python:3.9-slim AS builder
+WORKDIR /install
 
-# Use the official Python base image
-FROM python:3.9-slim
+RUN apt-get update && apt-get install -y gcc default-libmysqlclient-dev libmariadb-dev pkg-config ca-certificates
 
-# Set the working directory in the container
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    default-libmysqlclient-dev \
-    pkg-config \
-    ca-certificates \
- && rm -rf /var/lib/apt/lists/*
-# Copy the requirements file to the container
 COPY requirements.txt .
 
-# Install the Python dependencies
-RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt --prefix=/install
 
-# Copy application files
-COPY static ./static
-COPY templates ./templates
+FROM python:3.9-slim
+WORKDIR /app
+
+COPY --from=builder /install /usr/local
+
+COPY static/ static/
+COPY templates/ templates/
 COPY app.py dbcontext.py person.py ./
 
-# Expose the port
 EXPOSE 5000
-
-# Set the entry point
-ENTRYPOINT ["python3", "app.py"]
+CMD ["python3", "app.py"]
