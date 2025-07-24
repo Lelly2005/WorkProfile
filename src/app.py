@@ -1,22 +1,27 @@
 from flask import Flask, render_template, request, Response, jsonify
 from os import environ
-from dbcontext import db_data, db_delete, db_add, health_check
+from dbcontext import db, db_data, db_delete, db_add, health_check
 from person import Person
 import logging
 from flask_cors import CORS
+
 app = Flask(__name__)
 CORS(app)
+
+# הגדרת לוגים
 app.logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setLevel(logging.INFO)
 app.logger.addHandler(handler)
 
+# הגדרות סביבה
 host_name = environ.get("HOSTNAME")
 if not health_check():
     host_name = "no_host"
 db_host = environ.get('DB_HOST')
 backend = environ.get('BACKEND') or "http://localhost"
 
+# ראוטים
 @app.route("/")
 def main():
     app.logger.info("Entering main route")
@@ -41,5 +46,9 @@ def add():
 @app.route("/health")
 def health():
     return "OK", 200
+
+# יצירת טבלאות במסד (אם צריך)
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(host='0.0.0.0', port=5000)
