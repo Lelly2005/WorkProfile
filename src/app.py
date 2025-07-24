@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify
 from os import environ
-from dbcontext import db, db_data, db_delete, db_add, health_check
+from dbcontext import db_data, db_delete, db_add, health_check
 from person import Person
 import logging
 from flask_cors import CORS
