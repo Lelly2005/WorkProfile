@@ -34,7 +34,7 @@ services:
     environment:
       DB_HOST: mysql
       DB_USER: flaskapp
-      DB_PASSWORD: flaskapp
+      DB_PASS: flaskapp
       DB_NAME: exampleDb
     networks:
       - workprofile-network
