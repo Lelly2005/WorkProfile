@@ -23,7 +23,9 @@ services:
       - workprofile-network
 
   workprofile:
-    build: ./backend
+    build: 
+      context: .
+      dockerfile: Dockerfile
     container_name: workprofile-app
     restart: always
     ports:
