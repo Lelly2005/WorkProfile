@@ -24,7 +24,7 @@ services:
 
   workprofile:
     build: 
-      context: .
+      context: ../
       dockerfile: Dockerfile
     container_name: workprofile-app
     restart: always
